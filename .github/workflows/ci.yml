@@ -1,0 +1,48 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: [ '5432:5432' ]
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 1s --health-retries 10
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - 2.7.2
+        appraisal:
+          - rails_6_0
+        adapter:
+          - sqlite3
+          - postgresql
+    env:
+      DATABASE_ADAPTER: ${{ matrix.adapter }}
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.appraisal }}.gemfile
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby }}
+      - name: Run Unit Tests
+        run: bundle exec rake spec:unit --trace
+      - name: Run Acceptance Tests
+        run: bundle exec rake spec:acceptance --trace

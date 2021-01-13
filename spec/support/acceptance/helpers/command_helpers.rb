@@ -40,7 +40,7 @@ module AcceptanceTests
     def run_command_within_bundle(*args)
       run_command_isolated_from_bundle(*args) do |runner|
         runner.command_prefix = "bundle _#{bundle.version}_ exec"
-        runner.env['BUNDLE_GEMFILE'] = fs.find_in_project('Gemfile').to_s
+        runner.env['BUNDLE_GEMFILE'] = ENV['BUNDLE_GEMFILE'] || fs.find_in_project('Gemfile').to_s
 
         yield runner if block_given?
       end
