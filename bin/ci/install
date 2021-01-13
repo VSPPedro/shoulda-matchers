@@ -1,0 +1,10 @@
+#!/bin/sh
+
+gem install bundler:1.17.3
+gem install appraisal
+bundle config set path $PWD/vendor/bundle
+bundle install --jobs=4 --retry=3
+
+if ! which zeus &>/dev/null; then
+  gem install zeus
+fi
