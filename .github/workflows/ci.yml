@@ -65,4 +65,4 @@ jobs:
       - name: Install dependencies
         run: bin/ci/install
       - name: Run Unit Tests
-        run: bundle exec appraisal ${{ matrix.appraisal }} rake spec:unit --trace
+        run: bundle exec rake --trace
