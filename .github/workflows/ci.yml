@@ -35,14 +35,14 @@ jobs:
           - postgresql
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
-      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.appraisal }}.gemfile
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
-      - name: Run Unit Tests
-        run: bundle exec rake spec:unit --trace
-      - name: Run Acceptance Tests
-        run: bundle exec rake spec:acceptance --trace
+      - name: Run tests
+        run: |
+          bundle exec rake spec:unit --trace
+          bundle exec rake spec:acceptance --trace
